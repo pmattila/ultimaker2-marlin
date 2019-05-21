@@ -15,7 +15,7 @@ MachineSettings::~MachineSettings()
 {
     for (uint8_t i = 0; i<MAX_MACHINE_SETTINGS; ++i)
     {
-        delete settings[i];
+        free(settings[i]);
         settings[i] = 0;
     }
 }
@@ -31,7 +31,7 @@ bool MachineSettings::store(uint8_t index)
     {
         if (freeMemory() > 200)
         {
-            settings[index] = new t_machinesettings;
+            settings[index] = (t_machinesettings *)malloc(sizeof(t_machinesettings));
         }
         else
         {
@@ -99,7 +99,7 @@ bool MachineSettings::recall(uint8_t index)
     max_z_jerk = settings[index]->max_z_jerk;
     max_e_jerk = settings[index]->max_e_jerk;
 
-    delete settings[index];
+    free(settings[index]);
     settings[index] = 0;
 
     return true;
