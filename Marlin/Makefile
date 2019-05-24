@@ -73,11 +73,11 @@ DEFINES := \
 HARDWARE_MOTHERBOARD ?= 72
 
 # Arduino source install directory, and version number
-ARDUINO_INSTALL_DIR  ?= /usr/share/arduino
-ARDUINO_VERSION      ?= 185
+ARDUINO_INSTALL_DIR  ?= /home/pma/Projects/Ultimaker/Arduino/arduino-1.8.9
+ARDUINO_VERSION      ?= 189
 
 # You can optionally set a path to the avr-gcc tools. Requires a trailing slash.
-#AVR_TOOLS_PATH ?= $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/bin/
+AVR_TOOLS_PATH       ?= $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/bin/
 
 # Programmer configuration
 UPLOAD_RATE        ?= 115200
