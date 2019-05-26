@@ -637,7 +637,7 @@ void lcd_menu_print_select()
                     else
                     {
                         //Classic gcode file
-                        menu.add_menu(menu_t(lcd_menu_print_classic_warning, MAIN_MENU_ITEM_POS(0)));
+                        //menu.add_menu(menu_t(lcd_menu_print_classic_warning, MAIN_MENU_ITEM_POS(0)));
                     }
                 }
             }
