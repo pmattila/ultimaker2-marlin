@@ -122,6 +122,7 @@ static volatile bool temp_meas_ready = false;
     (defined(EXTRUDER_1_AUTO_FAN_PIN) && EXTRUDER_1_AUTO_FAN_PIN > -1) || \
     (defined(EXTRUDER_2_AUTO_FAN_PIN) && EXTRUDER_2_AUTO_FAN_PIN > -1)
   static unsigned long extruder_autofan_last_check;
+  static unsigned long extruder_autofan_last_state;
 #endif
 
 // Init min and max temp with extreme values to prevent false errors during startup
@@ -391,7 +392,7 @@ int getHeaterPower(int heater)
 
 void setExtruderAutoFanState(int pin, bool state)
 {
-  unsigned char newFanSpeed = (state != 0) ? EXTRUDER_AUTO_FAN_SPEED : 0;
+  unsigned char newFanSpeed = (state == 0) ? EXTRUDER_AUTO_FAN_SPEED : 0;
   // this idiom allows both digital and PWM fan outputs (see M42 handling).
   pinMode(pin, OUTPUT);
   digitalWrite(pin, newFanSpeed);
@@ -401,32 +402,39 @@ void setExtruderAutoFanState(int pin, bool state)
 void checkExtruderAutoFans()
 {
   uint8_t fanState = 0;
+  long hyst;
 
   // which fan pins need to be turned on?
   #if defined(EXTRUDER_0_AUTO_FAN_PIN) && EXTRUDER_0_AUTO_FAN_PIN > -1
-    if (current_temperature[0] > EXTRUDER_AUTO_FAN_TEMPERATURE)
+    hyst = (extruder_autofan_last_state & 1) == 0 ?
+           EXTRUDER_AUTO_FAN_HYSTERESIS : -EXTRUDER_AUTO_FAN_HYSTERESIS;
+    if (current_temperature[0] > EXTRUDER_AUTO_FAN_TEMPERATURE + hyst)
       fanState |= 1;
   #endif
   #if defined(EXTRUDER_1_AUTO_FAN_PIN) && EXTRUDER_1_AUTO_FAN_PIN > -1 && EXTRUDERS > 1
-    if (current_temperature[1] > EXTRUDER_AUTO_FAN_TEMPERATURE)
+    hyst = (extruder_autofan_last_state & 2) == 0 ?
+           EXTRUDER_AUTO_FAN_HYSTERESIS : -EXTRUDER_AUTO_FAN_HYSTERESIS;
+    if (current_temperature[1] > EXTRUDER_AUTO_FAN_TEMPERATURE + hyst)
     {
+      fanState |= 2;
       if (EXTRUDER_1_AUTO_FAN_PIN == EXTRUDER_0_AUTO_FAN_PIN)
         fanState |= 1;
-      else
-        fanState |= 2;
     }
   #endif
   #if defined(EXTRUDER_2_AUTO_FAN_PIN) && EXTRUDER_2_AUTO_FAN_PIN > -1 && EXTRUDERS > 2
-    if (current_temperature[2] > EXTRUDER_AUTO_FAN_TEMPERATURE)
+    hyst = (extruder_autofan_last_state & 4) == 0 ?
+           EXTRUDER_AUTO_FAN_HYSTERESIS : -EXTRUDER_AUTO_FAN_HYSTERESIS;
+    if (current_temperature[2] > EXTRUDER_AUTO_FAN_TEMPERATURE + hyst)
     {
+      fanState |= 4;
       if (EXTRUDER_2_AUTO_FAN_PIN == EXTRUDER_0_AUTO_FAN_PIN)
         fanState |= 1;
-      else if (EXTRUDER_2_AUTO_FAN_PIN == EXTRUDER_1_AUTO_FAN_PIN)
+      if (EXTRUDER_2_AUTO_FAN_PIN == EXTRUDER_1_AUTO_FAN_PIN)
         fanState |= 2;
-      else
-        fanState |= 4;
     }
   #endif
+
+  extruder_autofan_last_state = fanState;
 
   // update extruder auto fan states
   #if defined(EXTRUDER_0_AUTO_FAN_PIN) && EXTRUDER_0_AUTO_FAN_PIN > -1
