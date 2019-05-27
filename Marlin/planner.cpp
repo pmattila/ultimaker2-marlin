@@ -537,6 +537,11 @@ void check_axes_activity()
       fan_kick_end = 0;
     }
   #endif//FAN_KICKSTART_TIME
+  #ifdef FAN_MIN_PWM
+  if (tail_fan_speed > 0) {
+    tail_fan_speed = FAN_MIN_PWM + (((256-FAN_MIN_PWM) * tail_fan_speed) >> 8);
+  }
+  #endif
   #ifdef FAN_SOFT_PWM
   fanSpeedSoftPwm = tail_fan_speed;
   #else
