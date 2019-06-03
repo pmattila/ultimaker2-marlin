@@ -36,23 +36,54 @@
 # Note that all settings are set with ?=, this means you can override them
 # from the commandline with "make HARDWARE_MOTHERBOARD=71" for example
 
+# Directory used to build files in, contains all the build files
+BUILD_DIR          ?= ultimaker
+
+# Build version
+BUILD_NAME	   ?= 19.03.1
+
+#
+# EXP3       Pin@2560   Digital
+#   PB7        26         13
+#
+# EXT I/O
+#   PC7        60         30
+#   PD7        50         38
+#
+
+# My build
+DEFINES := \
+	-DSTRING_CONFIG_H_AUTHOR=\"PMa-${BUILD_NAME}++\"	\
+	-DEEPROM_VERSION=\"V12\"				\
+	-DUM2PLUS						\
+	-DBABYSTEPPING						\
+	-DSERIAL_PORT=0						\
+	-DBAUDRATE=250000					\
+	-DEXTRUDERS=2						\
+	-DX_MAX_POS=220						\
+	-DY_MAX_POS=220						\
+	-DZ_MAX_POS=230						\
+	-DFILAMENT_SENSOR_PIN=30				\
+	-DEXTRUDER_0_AUTO_FAN_PIN=13				\
+	-DEXTRUDER_1_AUTO_FAN_PIN=13				\
+	-DDEFAULT_POWER_BUDGET=225				\
+	-DFILAMENT_BOWDEN_LENGTH=725				\
+
 # This defined the board you are compiling for (see Configuration.h for the options)
 HARDWARE_MOTHERBOARD ?= 72
 
 # Arduino source install directory, and version number
-ARDUINO_INSTALL_DIR  ?= /usr/share/arduino
-ARDUINO_VERSION      ?= 105
+ARDUINO_INSTALL_DIR  ?= /home/pma/Projects/Ultimaker/Arduino/arduino-1.8.9
+ARDUINO_VERSION      ?= 189
 
-# You can optionally set a path to the avr-gcc tools. Requires a trailing slash. (ex: /usr/local/avr-gcc/bin)
-AVR_TOOLS_PATH ?= $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/bin/
+# You can optionally set a path to the avr-gcc tools. Requires a trailing slash.
+AVR_TOOLS_PATH       ?= $(ARDUINO_INSTALL_DIR)/hardware/tools/avr/bin/
 
-#Programmer configuration
+# Programmer configuration
 UPLOAD_RATE        ?= 115200
 AVRDUDE_PROGRAMMER ?= wiring
 UPLOAD_PORT        ?= /dev/arduino
 
-#Directory used to build files in, contains all the build files, from object files to the final hex file.
-BUILD_DIR          ?= applet
 
 ############################################################################
 # Below here nothing should be changed...
@@ -242,8 +273,6 @@ DEBUG = stabs
 
 OPT = s
 
-DEFINES ?=
-
 # Program settings
 CC = $(AVR_TOOLS_PATH)avr-gcc
 CXX = $(AVR_TOOLS_PATH)avr-g++
@@ -260,7 +289,7 @@ MV = mv -f
 # $(info $$CXX is [${CXX}])
 
 # Place -D or -U options here
-CDEFS    = -DF_CPU=$(F_CPU) ${addprefix -D , $(DEFINES)}
+CDEFS    = -DF_CPU=$(F_CPU) $(DEFINES)
 CXXDEFS  = $(CDEFS)
 
 ifeq ($(HARDWARE_VARIANT), Teensy)
@@ -354,7 +383,7 @@ ifeq (${AVRDUDE_PROGRAMMER}, arduino)
 	stty -hup < $(UPLOAD_PORT); true
 endif
 
-	# Display size of file.
+# Display size of file.
 HEXSIZE = $(SIZE) --target=$(FORMAT) $(BUILD_DIR)/$(TARGET).hex
 ELFSIZE = $(SIZE) --mcu=$(MCU) -C $(BUILD_DIR)/$(TARGET).elf; \
           $(SIZE)  $(BUILD_DIR)/$(TARGET).elf
@@ -400,7 +429,7 @@ extcoff: $(TARGET).elf
 .elf.sym:
 	$(NM) -n $< > $@
 
-	# Link: create ELF output file from library.
+# Link: create ELF output file from library.
 $(BUILD_DIR)/$(TARGET).elf: $(OBJ) Configuration.h
 	$(Pecho) "  CXX   $@"
 	$P $(CC) $(ALL_CXXFLAGS) -Wl,--gc-sections  -Wl,-Map=$(BUILD_DIR)/$(TARGET).map -o $@ -L. $(OBJ) $(LDFLAGS)
