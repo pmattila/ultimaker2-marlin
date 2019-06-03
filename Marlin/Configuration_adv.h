@@ -80,12 +80,21 @@
 // extruder temperature is above/below EXTRUDER_AUTO_FAN_TEMPERATURE.
 // Multiple extruders can be assigned to the same pin in which case
 // the fan will turn on when any selected extruder is above the threshold.
-#define EXTRUDER_0_AUTO_FAN_PIN   -1
-#define EXTRUDER_1_AUTO_FAN_PIN   -1
-#define EXTRUDER_2_AUTO_FAN_PIN   -1
-#define EXTRUDER_AUTO_FAN_TEMPERATURE 40
-#define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
-
+#ifndef EXTRUDER_0_AUTO_FAN_PIN
+  #define EXTRUDER_0_AUTO_FAN_PIN   -1
+#endif
+#ifndef EXTRUDER_1_AUTO_FAN_PIN
+  #define EXTRUDER_1_AUTO_FAN_PIN   -1
+#endif
+#ifndef EXTRUDER_2_AUTO_FAN_PIN
+  #define EXTRUDER_2_AUTO_FAN_PIN   -1
+#endif
+#ifndef EXTRUDER_AUTO_FAN_TEMPERATURE
+  #define EXTRUDER_AUTO_FAN_TEMPERATURE 40
+#endif
+#ifndef EXTRUDER_AUTO_FAN_SPEED
+  #define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
+#endif
 
 //===========================================================================
 //=============================Mechanical Settings===========================
@@ -93,13 +102,13 @@
 
 #define ENDSTOPS_ONLY_FOR_HOMING // If defined the endstops will only be used for homing
 
-
 //// AUTOSET LOCATIONS OF LIMIT SWITCHES
 //// Added by ZetaPhoenix 09-15-2012
 #ifdef MANUAL_HOME_POSITIONS  // Use manual limit switch locations
   #define X_HOME_POS MANUAL_X_HOME_POS
   #define Y_HOME_POS MANUAL_Y_HOME_POS
   #define Z_HOME_POS MANUAL_Z_HOME_POS
+
 #else //Set min/max homing switch positions based upon homing direction and min/max travel limits
   //X axis
   #if X_HOME_DIR == -1
@@ -209,6 +218,7 @@
 // Default motor current for XY,Z,E in mA
 #define DEFAULT_PWM_MOTOR_CURRENT {1200, 1200, 1250}
 
+
 //===========================================================================
 //=============================Additional Features===========================
 //===========================================================================
@@ -260,7 +270,6 @@
 
 #ifdef ADVANCE
   #define EXTRUDER_ADVANCE_K .0
-
   #define D_FILAMENT 2.85
   #define STEPS_MM_E 836
   #define EXTRUTION_AREA (0.25 * D_FILAMENT * D_FILAMENT * 3.14159)
@@ -311,7 +320,6 @@ const int8_t dropsegments=5; //everything with less than this number of steps wi
 #else
   #define BLOCK_BUFFER_SIZE 16 // maximize block buffer
 #endif
-
 
 //The ASCII buffer for receiving from the serial:
 #define MAX_CMD_SIZE 96
