@@ -185,7 +185,7 @@
 #ifndef HEATER_2_MAXTEMP
     #define HEATER_2_MAXTEMP 290
 #endif
-#define BED_MAXTEMP 150
+#define BED_MAXTEMP 140
 
 //Check if the heater heats up MAX_HEATING_TEMPERATURE_INCREASE within MAX_HEATING_CHECK_MILLIS while the PID was at the maximum.
 // If not, raise an error because most likely the heater is not heating up the temperature sensor. Indicating an issue in the system.
