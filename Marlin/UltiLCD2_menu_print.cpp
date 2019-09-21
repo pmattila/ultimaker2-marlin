@@ -85,6 +85,7 @@ void abortPrint(bool bQuickstop)
     doCooldown();
     st_synchronize();
 
+#if 0
     // home all axis
     if (current_position[Z_AXIS] > max_pos[Z_AXIS] - 30)
     {
@@ -95,6 +96,9 @@ void abortPrint(bool bQuickstop)
     {
         homeAll();
     }
+#else
+    homeBed();
+#endif
 
     // finish all moves
     cmd_synchronize();
