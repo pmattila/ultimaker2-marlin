@@ -68,7 +68,7 @@ DEFINES := \
 	-DEXTRUDER_0_AUTO_FAN_PIN=38				\
 	-DEXTRUDER_1_AUTO_FAN_PIN=38				\
 	-DDEFAULT_POWER_BUDGET=225				\
-	-DFILAMENT_BOWDEN_LENGTH=725				\
+	-DFILAMENT_BOWDEN_LENGTH=790				\
 
 # This defined the board you are compiling for (see Configuration.h for the options)
 HARDWARE_MOTHERBOARD ?= 72
