@@ -68,13 +68,13 @@ DEFINES := \
 	-DEXTRUDER_0_AUTO_FAN_PIN=38				\
 	-DEXTRUDER_1_AUTO_FAN_PIN=38				\
 	-DDEFAULT_POWER_BUDGET=225				\
-	-DFILAMENT_BOWDEN_LENGTH=725				\
+	-DFILAMENT_BOWDEN_LENGTH=790				\
 
 # This defined the board you are compiling for (see Configuration.h for the options)
 HARDWARE_MOTHERBOARD ?= 72
 
 # Arduino source install directory, and version number
-ARDUINO_INSTALL_DIR  ?= /home/pma/Projects/Ultimaker/Arduino/arduino-1.8.9
+ARDUINO_INSTALL_DIR  ?= $(HOME)/Projects/Ultimaker/Arduino/arduino-1.8.9
 ARDUINO_VERSION      ?= 189
 
 # You can optionally set a path to the avr-gcc tools. Requires a trailing slash.
