@@ -4,7 +4,7 @@
 #include "UltiLCD2_hi_lib.h"
 #include "UltiLCD2_gfx.h"
 #include "UltiLCD2_menu_maintenance.h"
-#include "UltiLCD2_menu_first_run.h"
+#include "UltiLCD2_menu_leveling.h"
 #include "UltiLCD2_menu_material.h"
 #include "UltiLCD2_menu_utils.h"
 #include "UltiLCD2_menu_prefs.h"
@@ -36,7 +36,7 @@ void lcd_menu_maintenance()
         if (IS_SELECTED_MAIN(0))
         {
             menu.add_menu(menu_t(NULL, lcd_change_to_previous_menu, homeHead));
-            menu.add_menu(menu_t(lcd_menu_first_run_start_bed_leveling));
+            menu.add_menu(menu_t(lcd_menu_start_bed_leveling));
         }
         else if (IS_SELECTED_MAIN(1))
             menu.add_menu(menu_t(lcd_menu_maintenance_advanced));
@@ -77,6 +77,8 @@ static void lcd_advanced_item(uint8_t nr, uint8_t offsetY, uint8_t flags)
         strcpy_P(buffer, PSTR("Move material"));
     else if (nr == index++)
         strcpy_P(buffer, PSTR("Set fan speed"));
+    else if (nr == index++)
+        strcpy_P(buffer, PSTR("Level buildplate"));
     else if ((ui_mode & UI_MODE_EXPERT) && (nr == index++))
         strcpy_P(buffer, PSTR("Adjust buildplate"));
     else if (nr == index++)
@@ -407,9 +409,13 @@ void lcd_menu_maintenance_advanced()
         {
             LCD_EDIT_SETTING_BYTE_PERCENT(fanSpeed, "Fan speed", "%", 0, 100);
         }
+        else if (IS_SELECTED_SCROLL(index++))
+        {
+            menu.add_menu(menu_t(lcd_menu_start_bed_leveling, SCROLL_MENU_ITEM_POS(0)));
+        }
         else if ((ui_mode & UI_MODE_EXPERT) && (IS_SELECTED_SCROLL(index++)))
         {
-            menu.add_menu(menu_t(lcd_menu_first_run_start_bed_leveling, SCROLL_MENU_ITEM_POS(0)));
+            menu.add_menu(menu_t(lcd_menu_start_bed_adjustment, SCROLL_MENU_ITEM_POS(0)));
         }
         else if (IS_SELECTED_SCROLL(index++))
             menu.add_menu(menu_t(lcd_menu_maintenance_expert, SCROLL_MENU_ITEM_POS(0)));
