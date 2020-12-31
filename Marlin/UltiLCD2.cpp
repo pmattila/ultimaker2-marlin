@@ -6,7 +6,7 @@
 #include "UltiLCD2_menu_main.h"
 #include "UltiLCD2_menu_material.h"
 #include "UltiLCD2_menu_print.h"
-#include "UltiLCD2_menu_first_run.h"
+#include "UltiLCD2_menu_leveling.h"
 #include "UltiLCD2_menu_maintenance.h"
 #include "UltiLCD2_menu_utils.h"
 #include "cardreader.h"
@@ -219,15 +219,8 @@ void lcd_menu_startup()
 #ifdef SPECIAL_STARTUP
         menu.replace_menu(menu_t(lcd_menu_special_startup), lcd_lib_button_pressed);
 #else
-        if (IS_FIRST_RUN_DONE())
-        {
-            menu.return_to_previous(false);
-        }
-        else
-        {
-            menu.replace_menu(menu_t(lcd_menu_first_run_init), lcd_lib_button_pressed);
-        }
-#endif//SPECIAL_STARTUP
+        lcd_remove_menu();
+#endif
     }
 }
 
@@ -246,10 +239,6 @@ static void lcd_menu_special_startup()
     if (lcd_lib_button_pressed)
     {
         lcd_remove_menu();
-        if (!IS_FIRST_RUN_DONE())
-        {
-            lcd_add_menu(lcd_menu_first_run_init, ENCODER_NO_SELECTION);
-        }
     }
 }
 #endif//SPECIAL_STARTUP

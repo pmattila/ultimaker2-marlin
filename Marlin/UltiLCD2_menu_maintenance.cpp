@@ -4,7 +4,7 @@
 #include "UltiLCD2_hi_lib.h"
 #include "UltiLCD2_gfx.h"
 #include "UltiLCD2_menu_maintenance.h"
-#include "UltiLCD2_menu_first_run.h"
+#include "UltiLCD2_menu_leveling.h"
 #include "UltiLCD2_menu_material.h"
 #include "UltiLCD2_menu_utils.h"
 #include "UltiLCD2_menu_prefs.h"
@@ -36,7 +36,7 @@ void lcd_menu_maintenance()
         if (IS_SELECTED_MAIN(0))
         {
             menu.add_menu(menu_t(NULL, lcd_change_to_previous_menu, homeHead));
-            menu.add_menu(menu_t(lcd_menu_first_run_start_bed_leveling));
+            menu.add_menu(menu_t(lcd_menu_start_bed_leveling));
         }
         else if (IS_SELECTED_MAIN(1))
             menu.add_menu(menu_t(lcd_menu_maintenance_advanced));

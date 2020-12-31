@@ -4,6 +4,7 @@
 #include "Marlin.h"
 #include "fastio.h"
 
+#define EEPROM_FIRST_RUN_DONE_OFFSET 0x400
 #define EEPROM_UI_MODE_OFFSET 0x401
 #define EEPROM_LED_TIMEOUT_OFFSET 0x402
 #define EEPROM_LCD_TIMEOUT_OFFSET 0x404
