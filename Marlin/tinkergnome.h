@@ -30,6 +30,8 @@ void lcd_menu_recover_init();
 void lcd_menu_expert_recover();
 void reset_printing_state();
 void endofprint_retract_store();
+void lcd_prepare_buildplate_adjust();
+void lcd_menu_simple_buildplate_init();
 
 FORCE_INLINE void lcd_print_tune_nozzle0() { lcd_tune_value(target_temperature[0], 0, get_maxtemp(0) - 15); }
 #if EXTRUDERS > 1

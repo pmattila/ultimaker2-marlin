@@ -19,8 +19,8 @@
 #include "powerbudget.h"
 
 static void lcd_menu_maintenance_advanced_heatup();
-//static void lcd_menu_maintenance_led();
 static void lcd_menu_maintenance_extrude();
+static void lcd_menu_maintenance_led();
 static void lcd_menu_advanced_version();
 static void lcd_menu_advanced_stats();
 static void lcd_menu_maintenance_motion();
@@ -49,38 +49,35 @@ void lcd_menu_maintenance()
 
 static void lcd_advanced_item(uint8_t nr, uint8_t offsetY, uint8_t flags)
 {
-    uint8_t index(0);
     char buffer[32] = {0};
+    uint8_t index = 0;
+
     if (nr == index++)
         strcpy_P(buffer, PSTR("< RETURN"));
     else if (nr == index++)
-        strcpy_P(buffer, PSTR("Preferences"));
+        strcpy_P(buffer, PSTR("Home head"));
+    else if (nr == index++)
+        strcpy_P(buffer, PSTR("Center head"));
+    else if (nr == index++)
+        strcpy_P(buffer, PSTR("Set fan speed"));
 #if EXTRUDERS > 1
     else if (nr == index++)
         strcpy_P(buffer, PSTR("Swap extruders"));
 #endif
     else if (nr == index++)
-        strcpy_P(buffer, PSTR("Heatup nozzle"));
-#if TEMP_SENSOR_BED != 0
-    else if (nr == index++)
-        strcpy_P(buffer, PSTR("Heatup buildplate"));
-#endif
-    else if (nr == index++)
-        strcpy_P(buffer, PSTR("Home head"));
-    else if (nr == index++)
         strcpy_P(buffer, PSTR("Lower buildplate"));
     else if (nr == index++)
         strcpy_P(buffer, PSTR("Raise buildplate"));
     else if (nr == index++)
-        strcpy_P(buffer, PSTR("Insert material"));
-    else if (nr == index++)
-        strcpy_P(buffer, PSTR("Move material"));
-    else if (nr == index++)
-        strcpy_P(buffer, PSTR("Set fan speed"));
+        strcpy_P(buffer, PSTR("Level buildplate"));
     else if ((ui_mode & UI_MODE_EXPERT) && (nr == index++))
-        strcpy_P(buffer, PSTR("Adjust buildplate"));
+        strcpy_P(buffer, PSTR("Adjust plate corners"));
+    else if ((ui_mode & UI_MODE_EXPERT) && (nr == index++))
+        strcpy_P(buffer, PSTR("Adjust nozzle height"));
     else if (nr == index++)
         strcpy_P(buffer, PSTR("Expert functions"));
+    else if (nr == index++)
+        strcpy_P(buffer, PSTR("Preferences"));
     else
         strcpy_P(buffer, PSTR("???"));
 
@@ -90,12 +87,20 @@ static void lcd_advanced_item(uint8_t nr, uint8_t offsetY, uint8_t flags)
 static void lcd_advanced_details(uint8_t nr)
 {
     char buffer[32] = {0};
-    buffer[0] = '\0';
-    if (!(ui_mode & UI_MODE_EXPERT) && (nr > 8+BED_MENU_OFFSET+2*EXTRUDERS))
-        ++nr;
+    uint8_t index = 0;
 
+    if (nr == index++)
+        ; // < RETURN
+    else if (nr == index++)
+        ; // Home head
+    else if (nr == index++)
+        ; // Center head
+    else if (nr == index++)
+    {
+        int_to_string(int(fanSpeed) * 100 / 255, buffer, PSTR("%"));
+    }
 #if EXTRUDERS > 1
-    if (nr == 2)
+    else if (nr == index++)
     {
         // extruders swapped?
         uint8_t xpos = (swapExtruders() ? LCD_GFX_WIDTH-LCD_CHAR_MARGIN_RIGHT-7*LCD_CHAR_SPACING : LCD_CHAR_MARGIN_LEFT);
@@ -107,38 +112,30 @@ static void lcd_advanced_details(uint8_t nr)
         lcd_lib_draw_stringP(LCD_GFX_WIDTH/2-LCD_CHAR_MARGIN_RIGHT-LCD_CHAR_SPACING, BOTTOM_MENU_YPOS, PSTR("<->"));
         return;
     }
-    else if (nr == EXTRUDERS + 1)
-#else
-    if (nr == 2)
 #endif
-    {
-#if EXTRUDERS > 1
-        int_to_string(int(target_temperature[1]), int_to_string(int(dsp_temperature[1]), int_to_string(int(target_temperature[0]), int_to_string(int(dsp_temperature[0]), buffer, PSTR("C/")), PSTR("C ")), PSTR("C/")), PSTR("C"));
-#else
-        int_to_string(int(target_temperature[0]), int_to_string(int(dsp_temperature[0]), buffer, PSTR("C/")), PSTR("C"));
-#endif // EXTRUDERS
-    }
-#if TEMP_SENSOR_BED != 0
-    else if (nr == EXTRUDERS + 2)
-    {
-        int_to_string(int(target_temperature_bed), int_to_string(int(dsp_temperature_bed), buffer, PSTR("C/")), PSTR("C"));
-    }
-#endif
-    else if (nr == EXTRUDERS + BED_MENU_OFFSET + 7)
-    {
-        int_to_string(int(fanSpeed) * 100 / 255, buffer, PSTR("%"));
-    }
-    else
-    {
-        return;
-    }
+    else if (nr == index++)
+        ; // Lower buildplate
+    else if (nr == index++)
+        ; // Raise buildplate
+    else if (nr == index++)
+        ; // Level buildplate
+    else if ((ui_mode & UI_MODE_EXPERT) && (nr == index++))
+        ; // Adjust corners
+    else if ((ui_mode & UI_MODE_EXPERT) && (nr == index++))
+        ; // Adjust height
+    else if (nr == index++)
+        ; // Expert functions
+    else if (nr == index++)
+        ; // Preferences
+
     lcd_lib_draw_string_left(BOTTOM_MENU_YPOS, buffer);
 }
 
 static void lcd_preferences_item(uint8_t nr, uint8_t offsetY, uint8_t flags)
 {
-    uint8_t index(0);
     char buffer[32] = {0};
+    uint8_t index = 0;
+
     if (nr == index++)
         strcpy_P(buffer, PSTR("< RETURN"));
     else if (nr == index++)
@@ -180,7 +177,6 @@ static void lcd_preferences_item(uint8_t nr, uint8_t offsetY, uint8_t flags)
 static void lcd_preferences_details(uint8_t nr)
 {
     char buffer[32] = {0};
-    buffer[0] = '\0';
 
     if (nr == 1)
     {
@@ -257,6 +253,13 @@ static void lcd_preferences_details(uint8_t nr)
         return;
     }
     lcd_lib_draw_string_left(BOTTOM_MENU_YPOS, buffer);
+}
+
+void centerHead()
+{
+    char buffer[32] = {0};
+    sprintf_P(buffer, PSTR("G1 F%i X%i Y%i"), int(homing_feedrate[0]), int(AXIS_CENTER_POS(X_AXIS)), int(AXIS_CENTER_POS(Y_AXIS)));
+    enquecommand(buffer);
 }
 
 void homeHead()
@@ -337,41 +340,36 @@ void lcd_dual_move_material()
 
 void lcd_menu_maintenance_advanced()
 {
-    lcd_scroll_menu(PSTR("ADVANCED"), BED_MENU_OFFSET + EXTRUDERS + ((ui_mode & UI_MODE_EXPERT) ? 10 : 9), lcd_advanced_item, lcd_advanced_details);
+    lcd_scroll_menu(PSTR("ADVANCED"), 7 + BED_MENU_OFFSET + EXTRUDERS + ((ui_mode & UI_MODE_EXPERT) ? 2 : 0), lcd_advanced_item, lcd_advanced_details);
+
     if (lcd_lib_button_pressed)
     {
         uint8_t index = 0;
         if (IS_SELECTED_SCROLL(index++))
+        {
             menu.return_to_previous();
+        }
         else if (IS_SELECTED_SCROLL(index++))
-            menu.add_menu(menu_t(lcd_menu_preferences, SCROLL_MENU_ITEM_POS(0)));
+        {
+            lcd_lib_keyclick();
+            homeHead();
+        }
+        else if (IS_SELECTED_SCROLL(index++))
+        {
+            lcd_lib_keyclick();
+            homeHead();
+            centerHead();
+        }
+        else if (IS_SELECTED_SCROLL(index++))
+        {
+            LCD_EDIT_SETTING_BYTE_PERCENT(fanSpeed, "Fan speed", "%", 0, 100);
+        }
 #if EXTRUDERS > 1
         else if (IS_SELECTED_SCROLL(index++))
         {
             menu.add_menu(menu_t(init_swap_menu, lcd_menu_swap_extruder, NULL));
         }
 #endif
-        else if (IS_SELECTED_SCROLL(index++))
-        {
-            // heatup nozzle
-        #if EXTRUDERS < 2
-            active_extruder = 0;
-            start_nozzle_heatup();
-        #else
-            menu.add_menu(menu_t(lcd_dual_nozzle_heatup, MAIN_MENU_ITEM_POS(active_extruder ? 1 : 0)));
-        #endif
-        }
-#if TEMP_SENSOR_BED != 0
-        else if (IS_SELECTED_SCROLL(index++))
-        {
-            menu.add_menu(menu_t(lcd_menu_maintenance_advanced_bed_heatup, MAIN_MENU_ITEM_POS(0), 4));
-        }
-#endif
-        else if (IS_SELECTED_SCROLL(index++))
-        {
-            lcd_lib_keyclick();
-            homeHead();
-        }
         else if (IS_SELECTED_SCROLL(index++))
         {
             lcd_lib_keyclick();
@@ -385,34 +383,24 @@ void lcd_menu_maintenance_advanced()
         }
         else if (IS_SELECTED_SCROLL(index++))
         {
-        // insert material
-        #if EXTRUDERS < 2
-            active_extruder = 0;
-            start_insert_material();
-        #else
-            menu.add_menu(menu_t(lcd_dual_insert_material, MAIN_MENU_ITEM_POS(active_extruder ? 1 : 0)));
-        #endif // EXTRUDERS
-        }
-        else if (IS_SELECTED_SCROLL(index++))
-        {
-            // move material
-        #if EXTRUDERS < 2
-            active_extruder = 0;
-            start_move_material();
-        #else
-            menu.add_menu(menu_t(lcd_dual_move_material, MAIN_MENU_ITEM_POS(active_extruder ? 1 : 0)));
-        #endif // EXTRUDERS
-        }
-        else if (IS_SELECTED_SCROLL(index++))
-        {
-            LCD_EDIT_SETTING_BYTE_PERCENT(fanSpeed, "Fan speed", "%", 0, 100);
+            menu.add_menu(menu_t(lcd_menu_start_bed_leveling, SCROLL_MENU_ITEM_POS(0)));
         }
         else if ((ui_mode & UI_MODE_EXPERT) && (IS_SELECTED_SCROLL(index++)))
         {
-            menu.add_menu(menu_t(lcd_menu_first_run_start_bed_leveling, SCROLL_MENU_ITEM_POS(0)));
+            menu.add_menu(menu_t(lcd_menu_start_bed_adjustment, SCROLL_MENU_ITEM_POS(0)));
+        }
+        else if ((ui_mode & UI_MODE_EXPERT) && (IS_SELECTED_SCROLL(index++)))
+        {
+            menu.add_menu(menu_t(lcd_prepare_buildplate_adjust, lcd_menu_simple_buildplate_init, NULL));
         }
         else if (IS_SELECTED_SCROLL(index++))
+        {
             menu.add_menu(menu_t(lcd_menu_maintenance_expert, SCROLL_MENU_ITEM_POS(0)));
+        }
+        else if (IS_SELECTED_SCROLL(index++))
+        {
+            menu.add_menu(menu_t(lcd_menu_preferences, SCROLL_MENU_ITEM_POS(0)));
+        }
     }
     lcd_lib_update_screen();
 }
