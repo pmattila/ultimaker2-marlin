@@ -716,19 +716,15 @@ static const menu_t & get_main_expert(uint8_t nr, menu_t &opt)
     uint8_t menu_index = 0;
     if (nr == menu_index++)
     {
-        opt.setData(MENU_NORMAL, add_preheat_menu);
-    }
-    else if (nr == menu_index++)
-    {
         opt.setData(MENU_NORMAL, lcd_main_print);
     }
     else if (nr == menu_index++)
     {
-        opt.setData(MENU_NORMAL, lcd_main_maintenance);
+        opt.setData(MENU_NORMAL, add_preheat_menu);
     }
     else if (nr == menu_index++)
     {
-        opt.setData(MENU_NORMAL, init_material_settings);
+        opt.setData(MENU_NORMAL, lcd_main_maintenance);
     }
     else if (nr == menu_index++)
     {
@@ -737,6 +733,10 @@ static const menu_t & get_main_expert(uint8_t nr, menu_t &opt)
     else if (nr == menu_index++)
     {
         opt.setData(MENU_NORMAL, init_material_change);
+    }
+    else if (nr == menu_index++)
+    {
+        opt.setData(MENU_NORMAL, init_material_settings);
     }
     return opt;
 }
@@ -750,7 +750,7 @@ void drawMainExpert(uint8_t nr, uint8_t &flags)
                                 , 17
                                 , 52
                                 , 13
-                                , PSTR("PREHEAT")
+                                , PSTR("PRINT")
                                 , ALIGN_LEFT | ALIGN_VCENTER
                                 , flags);
     }
@@ -760,7 +760,7 @@ void drawMainExpert(uint8_t nr, uint8_t &flags)
                                 , 31
                                 , 52
                                 , 13
-                                , PSTR("PRINT")
+                                , PSTR("PREHEAT")
                                 , ALIGN_LEFT | ALIGN_VCENTER
                                 , flags);
     }
@@ -780,7 +780,7 @@ void drawMainExpert(uint8_t nr, uint8_t &flags)
                                 , 17
                                 , 52
                                 , 13
-                                , PSTR("SETTINGS")
+                                , PSTR("MOVE")
                                 , ALIGN_LEFT | ALIGN_VCENTER
                                 , flags);
     }
@@ -790,7 +790,7 @@ void drawMainExpert(uint8_t nr, uint8_t &flags)
                                 , 31
                                 , 52
                                 , 13
-                                , PSTR("MOVE")
+                                , PSTR("CHANGE")
                                 , ALIGN_LEFT | ALIGN_VCENTER
                                 , flags);
     }
@@ -800,7 +800,7 @@ void drawMainExpert(uint8_t nr, uint8_t &flags)
                                 , 45
                                 , 52
                                 , 13
-                                , PSTR("CHANGE")
+                                , PSTR("SELECT")
                                 , ALIGN_LEFT | ALIGN_VCENTER
                                 , flags);
     }
