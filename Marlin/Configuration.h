@@ -216,16 +216,12 @@
   #define PID_dT ((OVERSAMPLENR * 4.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
 // If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
-// Ultimaker
-    //#define  DEFAULT_Kp 22.2
-    //#define  DEFAULT_Ki 1.08
-    //#define  DEFAULT_Kd 114
 
 #ifdef UM2PLUS
-// Ultimaker2 JarJar
-    #define  DEFAULT_Kp 10.0
-    #define  DEFAULT_Ki 1.5
-    #define  DEFAULT_Kd 70.0
+// Ultimaker2+
+    #define  DEFAULT_Kp 22.2
+    #define  DEFAULT_Ki 1.08
+    #define  DEFAULT_Kd 114
 #else
 // Ultimaker2
     #define  DEFAULT_Kp 10.0
