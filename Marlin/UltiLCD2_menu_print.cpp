@@ -97,7 +97,9 @@ void abortPrint(bool bQuickstop)
         homeAll();
     }
 #else
+    homeHead();
     homeBed();
+    centerHead();
 #endif
 
     // finish all moves
