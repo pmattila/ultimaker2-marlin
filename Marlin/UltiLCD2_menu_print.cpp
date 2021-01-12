@@ -860,9 +860,9 @@ static void lcd_menu_print_classic_warning()
 {
     lcd_question_screen(NULL, userStartPrint, PSTR("CONTINUE"), lcd_menu_print_select, lcd_remove_menu, PSTR("CANCEL"));
 
-    lcd_lib_draw_string_centerP(10, PSTR("This file will"));
-    lcd_lib_draw_string_centerP(20, PSTR("override machine"));
-    lcd_lib_draw_string_centerP(30, PSTR("setting with setting"));
+    lcd_lib_draw_string_centerP(10, PSTR("This G-code file"));
+    lcd_lib_draw_string_centerP(20, PSTR("will override machine"));
+    lcd_lib_draw_string_centerP(30, PSTR("and material settings"));
     lcd_lib_draw_string_centerP(40, PSTR("from the slicer."));
 
     lcd_lib_update_screen();
